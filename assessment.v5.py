@@ -1,16 +1,25 @@
 import random
-# checks for integers less than zero for the rounds component
-# if the choice is less than zero
+import math
+
+
+# checks for integers less than zero
 def int_check(question, num=None, exit_code=None):
+    # calculate the maximum number of guesses
+
     # if any integer is allowed...
     if num is None:
         error = "Please enter an integer"
 
     # if the number needs to be more than an
-    # integer (ie: rounds / 'number')
+    # integer (ie: rounds / 'high number')
     elif num is not None:
         error = (f"Please enter an integer that is "
                  f"more than / equal to {num}")
+
+    # if the number needs to between low & high
+    else:
+        error = (f"Please enter an integer that is "
+                 f"greater than {num}")
 
     while True:
         response = input(question).lower()
@@ -29,9 +38,9 @@ def int_check(question, num=None, exit_code=None):
             return response
 
         except ValueError:
-            print(error)
+            print()
 
-# checks if the user would like instructions or not
+
 def yes_no(question):
     """Checks user response to a question is yes / no (y/n) returns 'yes' or 'no' """
 
@@ -47,7 +56,7 @@ def yes_no(question):
         else:
             print("please enter yes / no")
 
-# print the instructions on request
+
 def instructions():
     """Prints instructions"""
 
@@ -58,47 +67,45 @@ Welcome to the math quiz, here you will need
 to answer math questions and if you are correct,
 it will say you were correct and if you were wrong,
 it will show you the answer and say that you were 
-incorrect. Your job is the get as many answers correct
-as possible and if you would like to finish at any time,
-please enter the exit code 'xxx'.
-
-Good Luck.
+incorrect. Your job is to get as many right as possible
+and watch out because you only get one chance to answer correctly.
+If you want to quit anytime, you will be asked if you would like to quit.
 
     ''')
 
-# check if the integer the user entered is more than the variable 'num'
-def num_check(question, num_type=int, num=0, exit_code="xxx"):
-    error = f"Please enter an integer that is more than {num}."
+
+def string_checker(valid_ans=("yes", "no", "xxx")):
+    error = f"Please enter a valid option form the following list: {valid_ans - 1}"
 
     while True:
-        # Ask user question and return response of
-        # exit code is returned
-        response = input(question)
-        if response == exit_code:
-            return response
 
-        # Check response is more than minimum
-        try:
-            response = num_type(response)
+        # Get user response and make sure it's lowercase
+        user_response = input(valid_ans).lower()
 
-            if response > num:
-                return response
-            else:
-                print(error)
+        for item in valid_ans:
+            # check if the user response is a word in the list
+            if item == user_response:
+                return item
 
-            # Show error if response is invalid
-        except ValueError:
-                print(error)
+            # check if the user response is the same as
+            # the first letter of an item in the list
+            elif user_response == item[0]:
+                return item
+
+        # print error if user does not enter something that is valid
+        print(error)
+        print()
+
 
 # Main Routine starts here
-# Initialise quiz variables
+# Initialise game variables
 mode = "regular"
 rounds_played = 0
-quiz_history = []
+game_history = []
 all_scores = []
 rounds_correct = 0
 rounds_incorrect = 0
-end_quiz = "no"
+end_game = "no"
 feedback = ""
 
 print("✖️➕➖➗ Welcome to the math quiz ➗➖➕✖️")
@@ -112,16 +119,19 @@ if want_instructions == "yes":
     instructions()
 print()
 
+# Instructions
+
 # Ask user for number of rounds / infinite mode
-num_rounds = num_check("Rounds <enter for infinite>: ",
-                       num=0, exit_code="")
+num_rounds = int_check("Rounds <enter for infinite>: ",
+                       num=1, exit_code="")
 
 if num_rounds == "":
     mode = "infinite"
     num_rounds = 5
 
-# Quiz loop starts here
+# Game loop starts here
 while rounds_played < num_rounds:
+
     # Rounds headings
     if mode == "infinite":
         rounds_heading = f"\n♾️♾️♾️ Round {rounds_played + 1} (Infinite Mode) ♾️♾️♾️ "
@@ -131,6 +141,7 @@ while rounds_played < num_rounds:
     print(rounds_heading)
     print()
 
+    rounds_played += 1
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
     symbol_list = ('+', '*', '-')
@@ -138,16 +149,16 @@ while rounds_played < num_rounds:
     # if users are in infinite mode, increase number of rounds!
     if mode == "infinite":
         num_rounds += 1
-    rounds_played += 1
+
     z = comp_choice
     x = num1
     y = num2
-    error = f"Please enter an integer"
-    # print the question that the user has to answer
+
     print(f"\nQuestion {rounds_played} : {num1} {comp_choice} {num2}")
     answer = eval(f"{x} {z} {y}")
-    # ask user to use an integer if their answer is not an integer
-    user_choice = int_check(f"\nWhat is the answer?? ", exit_code="xxx")
+    print(round(answer))
+    # ask user for the answer
+    user_choice = int_check(f"\n What is the answer??", exit_code="xxx")
     if user_choice == "xxx":
         break
     # find out if the answer is correct or incorrect
@@ -158,38 +169,39 @@ while rounds_played < num_rounds:
         feedback = f"This answer is incorrect."
         rounds_incorrect += 1
         print(f"The answer was {answer}")
+        # ask the user to guess the number...
 
     # print feedback to user
     print(feedback)
-# Quiz loop ends here
-# Quiz history / statistics area
-    # Add round results to quiz history
-    history_feedback = f"Round {rounds_played}: {feedback}"
 
-    quiz_history.append(history_feedback)
+# Game loop ends here
 
-    all_scores.append(num_rounds)
+# Game history / statistics area
+
 if rounds_played > 0:
-    # Calculate the percentage of correct and incorrect answers
+    # Calculate Statistics
     rounds_correct = rounds_played - rounds_incorrect
     rounds_incorrect = rounds_played - rounds_correct
     percent_won = rounds_correct / rounds_played * 100
     percent_lost = rounds_incorrect / rounds_played * 100
 
-    # Output Quiz Statistics
-    print("📊📊📊 Quiz Statistics 📊📊📊")
-    print(f"✅ Correct: {percent_won:.2f}% \t "
-          f"❌ Incorrect: {percent_lost:.2f}% \t")
+    # Output Game Statistics
+    print("📊📊📊 Game Statistics 📊📊📊")
+    print(f"👍 Won: {percent_won:.2f}% \t "
+          f"😢 Lost: {percent_lost:.2f}% \t")
 
-    # Display the quiz history on request
-    see_history = yes_no("Do you want to see your quiz history? ")
+    # Display the game history on request
+    see_history = yes_no("Do you want to see your game history? ")
     if see_history == "yes":
-        for item in quiz_history:
+        for item in game_history:
             print(item)
             print()
 
     print()
-    print("Thanks for playing!")
+    print("Thanks for playing")
+
+# Game history / statistics area
+
 
 
 

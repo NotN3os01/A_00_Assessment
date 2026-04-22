@@ -12,6 +12,11 @@ def int_check(question, num=None, exit_code=None):
         error = (f"Please enter an integer that is "
                  f"more than / equal to {num}")
 
+    # check that the integer the user entered has a greater value than the variable 'num'
+    else:
+        error = (f"Please enter an integer that is "
+                 f"greater than {num}")
+
     while True:
         response = input(question).lower()
 
@@ -31,7 +36,7 @@ def int_check(question, num=None, exit_code=None):
         except ValueError:
             print(error)
 
-# checks if the user would like instructions or not
+# checks if the user would like instructions or not with a simple yes/no checker
 def yes_no(question):
     """Checks user response to a question is yes / no (y/n) returns 'yes' or 'no' """
 
@@ -91,14 +96,14 @@ def num_check(question, num_type=int, num=0, exit_code="xxx"):
                 print(error)
 
 # Main Routine starts here
-# Initialise quiz variables
+# Initialise game variables
 mode = "regular"
 rounds_played = 0
-quiz_history = []
+game_history = []
 all_scores = []
 rounds_correct = 0
 rounds_incorrect = 0
-end_quiz = "no"
+end_game = "no"
 feedback = ""
 
 print("✖️➕➖➗ Welcome to the math quiz ➗➖➕✖️")
@@ -114,13 +119,13 @@ print()
 
 # Ask user for number of rounds / infinite mode
 num_rounds = num_check("Rounds <enter for infinite>: ",
-                       num=0, exit_code="")
+                       num=1, exit_code="")
 
 if num_rounds == "":
     mode = "infinite"
     num_rounds = 5
 
-# Quiz loop starts here
+# Game loop starts here
 while rounds_played < num_rounds:
     # Rounds headings
     if mode == "infinite":
@@ -161,12 +166,12 @@ while rounds_played < num_rounds:
 
     # print feedback to user
     print(feedback)
-# Quiz loop ends here
-# Quiz history / statistics area
-    # Add round results to quiz history
+# Game loop ends here
+# Game history / statistics area
+    # Add round results to game history
     history_feedback = f"Round {rounds_played}: {feedback}"
 
-    quiz_history.append(history_feedback)
+    game_history.append(history_feedback)
 
     all_scores.append(num_rounds)
 if rounds_played > 0:
@@ -176,20 +181,20 @@ if rounds_played > 0:
     percent_won = rounds_correct / rounds_played * 100
     percent_lost = rounds_incorrect / rounds_played * 100
 
-    # Output Quiz Statistics
-    print("📊📊📊 Quiz Statistics 📊📊📊")
-    print(f"✅ Correct: {percent_won:.2f}% \t "
-          f"❌ Incorrect: {percent_lost:.2f}% \t")
+    # Output Game Statistics
+    print("📊📊📊 Game Statistics 📊📊📊")
+    print(f"👍 Won: {percent_won:.2f}% \t "
+          f"😢 Lost: {percent_lost:.2f}% \t")
 
-    # Display the quiz history on request
-    see_history = yes_no("Do you want to see your quiz history? ")
+    # Display the game history on request
+    see_history = yes_no("Do you want to see your game history? ")
     if see_history == "yes":
-        for item in quiz_history:
+        for item in game_history:
             print(item)
             print()
 
     print()
-    print("Thanks for playing!")
+    print("Thanks for playing")
 
 
 

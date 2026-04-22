@@ -113,7 +113,7 @@ if want_instructions == "yes":
 print()
 
 # Ask user for number of rounds / infinite mode
-num_rounds = num_check("Rounds <enter for infinite>: ",
+num_rounds = int_check("Rounds <enter for infinite>: ",
                        num=0, exit_code="")
 
 if num_rounds == "":
